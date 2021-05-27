@@ -1,0 +1,1816 @@
+#Densities Calculation for Frontiers paper (2021)
+importante convert_units(distance_units, effort_units, area_units)
+Distance package
+```{r}
+library(Distance)
+install.packages("devtools")
+library(devtools)
+install_github("DistanceDevelopment/Distance")
+require(Rdistance)
+install.packages("mrds")
+library(mrds)
+```
+#Incorporating covariates in the detection function
+```{r}
+#NOT A COMPLETE EXAMPLE!
+#example from: http://examples.distancesampling.org/Distance-covariates/covariates-distill.html
+library(Distance)
+data(amakihi)
+head(amakihi, n=3)
+hist(amakihi$distance, main="Radial distances", xlab="Distance (m)")
+
+#To see if there are differences in the distribution of distances recorded by the different observers and in each hour after sunrise, boxplots can be used. Note how the ~ symbol is used to define the discrete groupings (i.e. observer and hour) 
+
+boxplot(amakihi$distance~amakihi$OBs, xlab="Observer", ylab="Distance (m)")
+boxplot(amakihi$distance~amakihi$HAS, xlab="Hour", ylab="Distance (m)")
+
+#For minutes after sunrise (a continuous variable), we create a scatterplot of MAS (on the x-axis) against distances (on the y -axis). The plotting symbol (or character) is selected with the argument pch (Figure 3)
+
+scatter.smooth(amakihi$MAS, amakihi$distance, family = "gaussian", pch='.', lpars=list(lwd=3),
+               xlab="Minutes after sunrise",ylab="Distance (m)")
+amakihi$HAS <- factor(amakihi$HAS)
+amakihi$MAS <- scale(amakihi$MAS)
+summary(amakihi$MAS)
+```
+
+
+
+#Encounter rates
+Calculate encounter rates for all the species for all the years 
+
+SITE DATA
+```{r}
+##################        SITE DATA        ################
+SiteData14b<-read.table("SiteData14.txt", head=T)
+head(SiteData14b)
+
+SiteData15b<-read.table("SiteData15b.txt", head=T)
+View(SiteData15b)
+head(SiteData15b)
+
+SiteData17<-read.table("SiteData17.txt", head=T)
+View(SiteData17)
+head(SiteData17)
+
+#Do not use the 17b file, it was modified due to the large number of walks in VV 
+SiteData17<-read.table("SiteData17.txt", head=T)
+View(SiteData17)
+head(SiteData17)
+
+SiteData18<-read.table("SiteData18.txt", head=T) 
+View(SiteData18)
+head(SiteData18)
+sum(SiteData18$length) 
+
+SiteData19<-read.table("SiteData19.txt", head=T)
+View(SiteData19)
+head(SiteData19)
+
+#Nocturnal Data
+NSiteData14<-read.table("NSiteData14.txt", head=T)
+View(NSiteData14)
+head(NSiteData14)
+
+NSiteData15<-read.table("NSiteData15.txt", head=T)
+View(NSiteData15)
+head(NSiteData15)
+
+
+```
+
+SPECIES CALCULATIONS - Avahi
+```{r}
+##############################    1- Avahi  ######################################
+#2014
+# 3 individuals sighted
+7/NocEffort2015 #=0.08974359
+
+#2015
+28/NocEffort2015  #=0.4705882
+
+#2017
+18/NocEffort2016 # = 0.3364486
+
+```
+
+Cheirogaleus
+```{r}
+##############################    2-Cheirogaleus    ##############################
+#Sighitngs 2014= 6
+#2015=4   not enough for density
+#2017=19  Maybe enough for density 
+
+##2015- ENCOUNTER RATES
+9/NocEffort2015# =0.1153846 individuals/km 
+
+##2015 - ENCOUNTER RATES
+4/NocEffort2015 # =0.06722689 individuals/km 
+
+##2015 - ENCOUNTER RATES
+25/NocEffort2017 #= 0.4672897 individuals/km 
+
+
+```
+
+```{r}
+##############################   3- Microcebus   ################################   
+#2014- 17 individuals seen 
+17/NocEffort2015# =0.2179487
+
+#2015 - 43 individuals seen 
+73/NocEffort2015 # = 1.226891
+
+#2017 - 43 individuals seen 
+43/NocEffort2017 # = 0.8037383
+
+
+
+```
+
+PROLEMUR
+```{r}
+##############################  4- Prolemur   ##############################
+#2014- 35 individuals seen 
+35/DiuEffort2014# = 0.1960784
+
+#2015 - 35 individuals seen 
+35/DiuEffort2015 # = 0.1215278
+
+#2016 - 27 individuals seen 
+48/DiuEffort2016 # = 0.1804511
+
+#2017 - 20 individuals seen 
+20/DiuEffort2017 # = 0.09111717
+
+#2018 -  10individuals seen 
+10/DiuEffort2018 # = 0.05154639
+
+#2019 - 0 individuals seen 
+0/DiuEffort2019 # = 0
+
+```
+
+RUBRIVENTER
+```{r}
+##############################  5- E rubriventer   ##############################
+#2014-  individuals seen 
+37/DiuEffort2014# =0.2072829
+
+#2015 - individuals seen 
+41/DiuEffort2015 # = 0.1423611
+
+#2016 -  individuals seen 
+38/DiuEffort2016 # = 0.2293233
+
+#2017 -  individuals seen 
+11/DiuEffort2017 # = 0.0501139
+
+#2018 -  individuals seen 
+9/DiuEffort2018 # = 0.04639175
+
+#2019 -  individuals seen 
+9/DiuEffort2019 # = 0.02995008
+
+
+```
+
+DAUBENTONIA
+```{r}
+##############################  6- Daubentonia  ##############################
+#2015 -  2 individuals seen 
+2/NocEffort2015 # =0.03361345
+
+```
+
+HAPALEMUR
+```{r}
+##############################  7- Hapalemur   ##############################
+#2014- 2  individuals seen 
+2/DiuEffort2014# = 0.01120448
+
+2/DiuEffort2015 # 0.006944444
+```
+
+RUFIFRONS
+```{r}
+##############################  8- E rufifrons   ##############################
+#2014-  individuals seen 
+181/DiuEffort2014# = 1.014006
+
+#2015 - individuals seen 
+176/DiuEffort2015 # = 0.6111111
+
+#2016 -  individuals seen 
+132/DiuEffort2016 # = 0.4962406
+
+#2017 -  individuals seen 
+96/DiuEffort2017 # = 0.4373576
+
+#2018 -  individuals seen 
+102/DiuEffort2018 # = 0.5257732
+
+#2019 -  individuals seen 
+77/DiuEffort2019 # = 0.2562396
+```
+ 
+VARECIA
+
+```{r}
+##############################  9- VARECIA   ##############################
+#2014-  individuals seen 
+115/DiuEffort2014# =0.6442577
+
+#2015 - individuals seen 
+115/DiuEffort2015 # = 0.3993056
+
+#2016 -  individuals seen 
+86/DiuEffort2016 # =  0.3233083
+
+#2017 -  individuals seen 
+57/DiuEffort2017 # = 0.2596811
+
+#2018 -  individuals seen 
+31/DiuEffort2018 # = 0.1597938
+
+#2019 -  individuals seen 
+26/DiuEffort2019 # = 0.08652246
+```
+
+
+#Test 1 with *Varecia* 2014 Data
+I included each walk done that year, each transect has a 500m effort
+DO NOT USE THIS
+```{r}
+Varecia14<-read.table("ds_var14a.txt", head=TRUE)
+head(Varecia14)
+Varecia14$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Varecia14) 
+Varecia15<- Varecia14[,-which(names(Varecia14) %in% c("sightdist", "sightangle"))]
+Varecia14$dist[Varecia14$dist == 0] <- NA 
+#DO NOT RUN Varecia14$Size[Varecia14$Size == 0] <- NA 
+sum(!is.na(Varecia14$Size))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Varecia14)
+
+# Rename column where nameS
+names(Varecia14)[names(Varecia14) == "dist"] <- "distance"
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Varecia14$distance, xlab="Distance (m)", main="Varecia 2014") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Varecia14_hn <- ds(data=Varecia14, key="hn", adjustment=NULL,
+              convert.units=conversion.factor, transect="line")
+summary(Varecia14_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,15,20,25,30)
+plot(Varecia14_hn, breaks=cutpoints, main="Half normal model,Varecia 2014 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Varecia14.unif.cos <- ds(Varecia14, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Varecia14.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Varecia14.hr.poly <- ds(Varecia14, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Varecia14.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+```{r}
+AIC(Varecia14_hn, Varecia14.hr.poly, Varecia14.unif.cos)
+
+#Goodness of fit
+gof_ds(Varecia14.hr.poly )
+
+#model comparison
+knitr::kable(summarize_ds_models(Varecia14_hn, Varecia14.hr.poly, Varecia14.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Varecia14.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Varecia14.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+#Test 2 with Varecia 2014 data
+Sightings with total effort, PLUS transects walked with no sightings (one line)
+
+Varecia14_TE 
+TE=Total effort
+
+```{r}
+Varecia14_TE<-read.table("ds_var14.txt", head=TRUE)
+head(Varecia14_TE)
+#calculate perpendicular distance 
+Varecia14_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Varecia14_TE) 
+Varecia14_TE <- Varecia14_TE[,-which(names(Varecia14_TE) %in% c("sightdist", "sightangle"))]
+Varecia14_TE$dist[Varecia14_TE$dist == 0] <- NA 
+#DO NOT RUN Varecia14_TE$Size[Varecia14_TE$Size == 0] <- NA 
+
+#this part determines the number of detection distances that are not missing. 
+sum(!is.na(Varecia14_TE$Size))
+
+# get column names
+colnames(Varecia14_TE)
+
+# Rename column where names
+names(Varecia14_TE)[names(Varecia14_TE) == "dist"] <- "distance"
+colnames(Varecia14_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Varecia14_TE$distance, xlab="Distance (m)", main="Varecia 2014") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+
+#Once all the data is in order, fit a detection function model with ds
+Varecia14_TE_hn <- ds(data=Varecia14_TE, key="hn", adjustment=NULL,
+              convert.units=conversion.factor, transect="line")
+summary(Varecia14_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,15,20,25,30)
+plot(Varecia14_TE_hn, breaks=cutpoints, main="Half normal model,Varecia 2014 line transects")
+
+```
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+Varecia14_TE.unif.cos <- ds(Varecia14_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Varecia14_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Varecia14_TE.hr.poly <- ds(Varecia14_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Varecia14_TE.hr.poly)
+
+```
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+```{r}
+AIC(Varecia14_TE_hn, Varecia14_TE.hr.poly, Varecia14_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Varecia14_TE.hr.poly )
+
+#model comparison
+knitr::kable(summarize_ds_models(Varecia14_TE_hn, Varecia14_TE.hr.poly, Varecia14_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Varecia14_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Varecia14_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+#Varecia 2015 data
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Varecia15_TE 
+TE=Total effort
+
+```{r}
+Varecia15_TE<-read.table("ds_var15.txt", head=TRUE)
+head(Varecia15_TE)
+Varecia15_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Varecia15_TE) 
+Varecia15_TE <- Varecia15_TE[,-which(names(Varecia15_TE) %in% c("sightdist", "sightangle"))]
+Varecia15_TE$dist[Varecia15_TE$dist == 0] <- NA 
+#DO NOT RUN Varecia15_TE$Size[Varecia15_TE$Size == 0] <- NA 
+sum(!is.na(Varecia15_TE$Size))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Varecia15_TE)
+
+# Rename column where nameS
+names(Varecia15_TE)[names(Varecia15_TE) == "dist"] <- "distance"
+colnames(Varecia15_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Varecia15_TE$distance, xlab="Distance (m)", main="Varecia 2015") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Varecia15_TE_hn <- ds(data=Varecia15_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Varecia15_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,15,20,25,30)
+plot(Varecia15_TE_hn, breaks=cutpoints, main="Half normal model,Varecia 2015 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Varecia15_TE.unif.cos <- ds(Varecia15_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Varecia15_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Varecia15_TE.hr.poly <- ds(Varecia15_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Varecia15_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Varecia15_TE_hn, Varecia15_TE.hr.poly, Varecia15_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Varecia15_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Varecia15_TE_hn, Varecia15_TE.hr.poly, Varecia15_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Varecia15_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Varecia15_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+
+#Varecia 2016 data
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Varecia16_TE 
+TE=Total effort
+
+```{r}
+Varecia16_TE<-read.table("ds_var16.txt", head=TRUE)
+head(Varecia16_TE)
+Varecia16_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Varecia16_TE) 
+Varecia16_TE <- Varecia16_TE[,-which(names(Varecia16_TE) %in% c("sightdist", "sightangle"))]
+Varecia16_TE$dist[Varecia16_TE$dist == 0] <- NA 
+#DO NOT RUN Varecia16_TE$Size[Varecia16_TE$Size == 0] <- NA 
+sum(!is.na(Varecia16_TE$distance))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Varecia16_TE)
+
+# Rename column where nameS
+names(Varecia16_TE)[names(Varecia16_TE) == "dist"] <- "distance"
+colnames(Varecia16_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Varecia16_TE$distance, xlab="Distance (m)", main="Varecia 2016") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Varecia16_TE_hn <- ds(data=Varecia16_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Varecia16_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,16,20,25,30)
+plot(Varecia16_TE_hn, breaks=cutpoints, main="Half normal model,Varecia 2016 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Varecia16_TE.unif.cos <- ds(Varecia16_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Varecia16_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Varecia16_TE.hr.poly <- ds(Varecia16_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Varecia16_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Varecia16_TE_hn, Varecia16_TE.hr.poly, Varecia16_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Varecia16_TE.hr.poly)
+
+#model comparison
+knitr::kable(summarize_ds_models(Varecia16_TE_hn, Varecia16_TE.hr.poly, Varecia16_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Varecia16_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Varecia16_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+
+#Varecia 2017 data
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Varecia17_TE 
+TE=Total effort
+
+```{r}
+Varecia17_TE<-read.table("ds_var17.txt", head=TRUE)
+head(Varecia17_TE)
+Varecia17_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Varecia17_TE) 
+Varecia17_TE <- Varecia17_TE[,-which(names(Varecia17_TE) %in% c("sightdist", "sightangle"))]
+Varecia17_TE$dist[Varecia17_TE$dist == 0] <- NA 
+#DO NOT RUN Varecia17_TE$Size[Varecia17_TE$Size == 0] <- NA 
+sum(!is.na(Varecia17_TE$distance))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Varecia17_TE)
+
+# Rename column where nameS
+names(Varecia17_TE)[names(Varecia17_TE) == "dist"] <- "distance"
+colnames(Varecia17_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Varecia17_TE$distance, xlab="Distance (m)", main="Varecia 2017") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Varecia17_TE_hn <- ds(data=Varecia17_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Varecia17_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,17,20,25,30)
+plot(Varecia17_TE_hn, breaks=cutpoints, main="Half normal model,Varecia 2017 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Varecia17_TE.unif.cos <- ds(Varecia17_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Varecia17_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Varecia17_TE.hr.poly <- ds(Varecia17_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Varecia17_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Varecia17_TE_hn, Varecia17_TE.hr.poly, Varecia17_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Varecia17_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Varecia17_TE_hn, Varecia17_TE.hr.poly, Varecia17_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Varecia17_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Varecia17_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+
+
+#Varecia 2018 data
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Varecia18_TE 
+TE=Total effort
+
+```{r}
+Varecia18_TE<-read.table("ds_var18.txt", head=TRUE)
+head(Varecia18_TE)
+
+#Calculate perpendicular distance
+Varecia18_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Varecia18_TE) 
+Varecia18_TE <- Varecia18_TE[,-which(names(Varecia18_TE) %in% c("sightdist", "sightangle"))]
+Varecia18_TE$dist[Varecia18_TE$dist == 0] <- NA 
+#DO NOT RUN Varecia18_TE$Size[Varecia18_TE$Size == 0] <- NA 
+
+sum(!is.na(Varecia18_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Varecia18_TE)
+
+# Rename column where nameS
+names(Varecia18_TE)[names(Varecia18_TE) == "dist"] <- "distance"
+colnames(Varecia18_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Varecia18_TE$distance, xlab="Distance (m)", main="Varecia 2018") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Varecia18_TE_hn <- ds(data=Varecia18_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Varecia18_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,18,20,25,30)
+plot(Varecia18_TE_hn, breaks=cutpoints, main="Half normal model,Varecia 2018 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Varecia18_TE.unif.cos <- ds(Varecia18_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Varecia18_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Varecia18_TE.hr.poly <- ds(Varecia18_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Varecia18_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Varecia18_TE_hn, Varecia18_TE.hr.poly, Varecia18_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Varecia18_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Varecia18_TE_hn, Varecia18_TE.hr.poly, Varecia18_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Varecia18_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Varecia18_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+
+
+#Varecia 2019 data
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Varecia19_TE 
+TE=Total effort
+
+```{r}
+Varecia19_TE<-read.table("ds_var19.txt", head=TRUE)
+head(Varecia19_TE)
+
+#Calculate perpendicular distance
+Varecia19_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Varecia19_TE) 
+Varecia19_TE <- Varecia19_TE[,-which(names(Varecia19_TE) %in% c("sightdist", "sightangle"))]
+Varecia19_TE$dist[Varecia19_TE$dist == 0] <- NA 
+#DO NOT RUN Varecia19_TE$Size[Varecia19_TE$Size == 0] <- NA 
+
+sum(!is.na(Varecia19_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Varecia19_TE)
+
+# Rename column where nameS
+names(Varecia19_TE)[names(Varecia19_TE) == "dist"] <- "distance"
+colnames(Varecia19_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Varecia19_TE$distance, xlab="Distance (m)", main="Varecia 2019") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Varecia19_TE_hn <- ds(data=Varecia19_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Varecia19_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,19,20,25,30)
+plot(Varecia19_TE_hn, breaks=cutpoints, main="Half normal model,Varecia 2019 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Varecia19_TE.unif.cos <- ds(Varecia19_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Varecia19_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Varecia19_TE.hr.poly <- ds(Varecia19_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Varecia19_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Varecia19_TE_hn, Varecia19_TE.hr.poly, Varecia19_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Varecia19_TE_hn)
+
+#model comparison
+knitr::kable(summarize_ds_models(Varecia19_TE_hn, Varecia19_TE.hr.poly, Varecia19_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Varecia19_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Varecia19_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+#Eulemur 2014 data
+
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Rufifrons14_TE 
+TE=Total effort
+
+```{r}
+Rufifrons14_TE<-read.table("ds_ruf14.txt", head=TRUE)
+head(Rufifrons14_TE)
+
+#Calculate perpendicular distance
+Rufifrons14_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Rufifrons14_TE) 
+Rufifrons14_TE <- Rufifrons14_TE[,-which(names(Rufifrons14_TE) %in% c("sightdist", "sightangle"))]
+Rufifrons14_TE$dist[Rufifrons14_TE$dist == 0] <- NA 
+#DO NOT RUN Rufifrons14_TE$Size[Rufifrons14_TE$Size == 0] <- NA 
+
+sum(!is.na(Rufifrons14_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Rufifrons14_TE)
+
+# Rename column where nameS
+names(Rufifrons14_TE)[names(Rufifrons14_TE) == "dist"] <- "distance"
+colnames(Rufifrons14_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Rufifrons14_TE$distance, xlab="Distance (m)", main="Eulemur rufifrons 2014") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Rufifrons14_TE_hn <- ds(data=Rufifrons14_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Rufifrons14_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,19,20,25,30)
+plot(Rufifrons14_TE_hn, breaks=cutpoints, main="Half normal model,Eulemur rufifrons 2019 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Rufifrons14_TE.unif.cos <- ds(Rufifrons14_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Rufifrons14_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Rufifrons14_TE.hr.poly <- ds(Rufifrons14_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Rufifrons14_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Rufifrons14_TE_hn, Rufifrons14_TE.hr.poly, Rufifrons14_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Rufifrons14_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Rufifrons14_TE_hn, Rufifrons14_TE.hr.poly, Rufifrons14_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Rufifrons14_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Rufifrons14_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+#Eulemur 2015 data
+
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Rufifrons15_TE 
+TE=Total effort
+
+```{r}
+Rufifrons15_TE<-read.table("ds_ruf15.txt", head=TRUE)
+head(Rufifrons15_TE)
+
+#Calculate perpendicular distance
+Rufifrons15_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Rufifrons15_TE) 
+Rufifrons15_TE <- Rufifrons15_TE[,-which(names(Rufifrons15_TE) %in% c("sightdist", "sightangle"))]
+Rufifrons15_TE$dist[Rufifrons15_TE$dist == 0] <- NA 
+#DO NOT RUN Rufifrons15_TE$Size[Rufifrons15_TE$Size == 0] <- NA 
+
+sum(!is.na(Rufifrons15_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Rufifrons15_TE)
+
+# Rename column where nameS
+names(Rufifrons15_TE)[names(Rufifrons15_TE) == "dist"] <- "distance"
+colnames(Rufifrons15_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Rufifrons15_TE$distance, xlab="Distance (m)", main="Eulemur 2014") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Rufifrons15_TE_hn <- ds(data=Rufifrons15_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Rufifrons15_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,19,20,25,30)
+plot(Rufifrons15_TE_hn, breaks=cutpoints, main="Half normal model,Eulemur rufifrons 2019 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Rufifrons15_TE.unif.cos <- ds(Rufifrons15_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Rufifrons15_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Rufifrons15_TE.hr.poly <- ds(Rufifrons15_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Rufifrons15_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Rufifrons15_TE_hn, Rufifrons15_TE.hr.poly, Rufifrons15_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Rufifrons15_TE.hr.poly)
+
+#model comparison
+knitr::kable(summarize_ds_models(Rufifrons15_TE_hn, Rufifrons15_TE.hr.poly, Rufifrons15_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Rufifrons15_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Rufifrons15_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+#Eulemur 2016 data
+
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Rufifrons16_TE 
+TE=Total effort
+
+```{r}
+Rufifrons16_TE<-read.table("ds_ruf16.txt", head=TRUE)
+head(Rufifrons16_TE)
+
+#Calculate perpendicular distance
+Rufifrons16_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Rufifrons16_TE) 
+Rufifrons16_TE <- Rufifrons16_TE[,-which(names(Rufifrons16_TE) %in% c("sightdist", "sightangle"))]
+Rufifrons16_TE$dist[Rufifrons16_TE$dist == 0] <- NA 
+#DO NOT RUN Rufifrons16_TE$Size[Rufifrons16_TE$Size == 0] <- NA 
+
+sum(!is.na(Rufifrons16_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Rufifrons16_TE)
+
+# Rename column where nameS
+names(Rufifrons16_TE)[names(Rufifrons16_TE) == "dist"] <- "distance"
+colnames(Rufifrons16_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Rufifrons16_TE$distance, xlab="Distance (m)", main="Eulemur rufifrons 2016") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Rufifrons16_TE_hn <- ds(data=Rufifrons16_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Rufifrons16_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,19,20,25,30)
+plot(Rufifrons16_TE_hn, breaks=cutpoints, main="Half normal model,Eulemur rufifrons 2016 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Rufifrons16_TE.unif.cos <- ds(Rufifrons16_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Rufifrons16_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Rufifrons16_TE.hr.poly <- ds(Rufifrons16_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Rufifrons16_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Rufifrons16_TE_hn, Rufifrons16_TE.hr.poly, Rufifrons16_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Rufifrons16_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Rufifrons16_TE_hn, Rufifrons16_TE.hr.poly, Rufifrons16_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Rufifrons16_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Rufifrons16_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+
+#Eulemur 2017 data
+
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Rufifrons17_TE 
+TE=Total effort
+
+```{r}
+Rufifrons17_TE<-read.table("ds_ruf17.txt", head=TRUE)
+head(Rufifrons17_TE)
+
+#Calculate perpendicular distance
+Rufifrons17_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Rufifrons17_TE) 
+Rufifrons17_TE <- Rufifrons17_TE[,-which(names(Rufifrons17_TE) %in% c("sightdist", "sightangle"))]
+Rufifrons17_TE$dist[Rufifrons17_TE$dist == 0] <- NA 
+#DO NOT RUN Rufifrons17_TE$Size[Rufifrons17_TE$Size == 0] <- NA 
+
+sum(!is.na(Rufifrons17_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Rufifrons17_TE)
+
+# Rename column where nameS
+names(Rufifrons17_TE)[names(Rufifrons17_TE) == "dist"] <- "distance"
+colnames(Rufifrons17_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Rufifrons17_TE$distance, xlab="Distance (m)", main="Eulemur rufifrons 2017") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Rufifrons17_TE_hn <- ds(data=Rufifrons17_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Rufifrons17_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,19,20,25,30)
+plot(Rufifrons17_TE_hn, breaks=cutpoints, main="Half normal model,Eulemur rufifrons 2017 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Rufifrons17_TE.unif.cos <- ds(Rufifrons17_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Rufifrons17_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Rufifrons17_TE.hr.poly <- ds(Rufifrons17_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Rufifrons17_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Rufifrons17_TE_hn, Rufifrons17_TE.hr.poly, Rufifrons17_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Rufifrons17_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Rufifrons17_TE_hn, Rufifrons17_TE.hr.poly, Rufifrons17_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Rufifrons17_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Rufifrons17_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+
+#Eulemur 2018 data
+
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Rufifrons18_TE 
+TE=Total effort
+
+```{r}
+Rufifrons18_TE<-read.table("ds_ruf15.txt", head=TRUE)
+head(Rufifrons18_TE)
+
+#Calculate perpendicular distance
+Rufifrons18_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Rufifrons18_TE) 
+Rufifrons18_TE <- Rufifrons18_TE[,-which(names(Rufifrons18_TE) %in% c("sightdist", "sightangle"))]
+Rufifrons18_TE$dist[Rufifrons18_TE$dist == 0] <- NA 
+#DO NOT RUN Rufifrons18_TE$Size[Rufifrons18_TE$Size == 0] <- NA 
+
+sum(!is.na(Rufifrons18_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Rufifrons18_TE)
+
+# Rename column where nameS
+names(Rufifrons18_TE)[names(Rufifrons18_TE) == "dist"] <- "distance"
+colnames(Rufifrons18_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Rufifrons18_TE$distance, xlab="Distance (m)", main="Eulemur rufifrons 2018") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Rufifrons18_TE_hn <- ds(data=Rufifrons18_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Rufifrons18_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,19,20,25,30)
+plot(Rufifrons18_TE_hn, breaks=cutpoints, main="Half normal model,Eulemur rufifrons 2018 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Rufifrons18_TE.unif.cos <- ds(Rufifrons18_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Rufifrons18_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Rufifrons18_TE.hr.poly <- ds(Rufifrons18_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Rufifrons18_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Rufifrons18_TE_hn, Rufifrons18_TE.hr.poly, Rufifrons18_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Rufifrons18_TE.hr.poly)
+
+#model comparison
+knitr::kable(summarize_ds_models(Rufifrons18_TE_hn, Rufifrons18_TE.hr.poly, Rufifrons18_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Rufifrons18_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Rufifrons18_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+#Eulemur 2019 data
+
+Only included sightings with total effort, and transects walked with no sightings (one line)
+
+Rufifrons19_TE 
+TE=Total effort
+
+```{r}
+Rufifrons19_TE<-read.table("ds_ruf19.txt", head=TRUE)
+head(Rufifrons19_TE)
+
+#Calculate perpendicular distance
+Rufifrons19_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Rufifrons19_TE) 
+Rufifrons19_TE <- Rufifrons19_TE[,-which(names(Rufifrons19_TE) %in% c("sightdist", "sightangle"))]
+Rufifrons19_TE$dist[Rufifrons19_TE$dist == 0] <- NA 
+#DO NOT RUN Rufifrons19_TE$Size[Rufifrons19_TE$Size == 0] <- NA 
+
+sum(!is.na(Rufifrons19_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Rufifrons19_TE)
+
+# Rename column where nameS
+names(Rufifrons19_TE)[names(Rufifrons19_TE) == "dist"] <- "distance"
+colnames(Rufifrons19_TE)
+```
+
+Examine the distribution of detection distances
+Gain familiarity with the perpendicular distance data using the hist() function
+```{r}
+hist(Rufifrons19_TE$distance, xlab="Distance (m)", main="Eulemur rufifrons 2019") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+```
+
+Once all the data is in order, fit a detection function model with ds
+```{r}
+Rufifrons19_TE_hn <- ds(data=Rufifrons19_TE, key="hn", adjustment=NULL,
+               transect="line")
+summary(Rufifrons19_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,5,10,19,20,25,30)
+plot(Rufifrons19_TE_hn, breaks=cutpoints, main="Half normal model,Eulemur rufifrons 2019 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+
+
+Rufifrons19_TE.unif.cos <- ds(Rufifrons19_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Rufifrons19_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Rufifrons19_TE.hr.poly <- ds(Rufifrons19_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Rufifrons19_TE.hr.poly)
+
+```
+
+
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Rufifrons19_TE_hn, Rufifrons19_TE.hr.poly, Rufifrons19_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Rufifrons19_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Rufifrons19_TE_hn, Rufifrons19_TE.hr.poly, Rufifrons19_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Rufifrons19_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Rufifrons19_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+#### Covariate modeling with rare species ##
+Instead of treating species as strata, an alternative form of analysis is to treat species as a covariate in the modelling of the detection function. 
+The principle is that the general key function is shared across species, but the scale parameter (σ) differs between species. In this way, the detections of all species is shared, such that the estimation of the detection function for the rare species is bolstered by information from other species; yet the rare species receives its own unique detection function such that bias is not induced in the abundance estimation for that species.
+```{r}
+source("TEAM library 1.7.R")
+birds <- read.csv("https://synergy.st-andrews.ac.uk/ds-manda/files/2016/11/montrave-line.csv")
+head(birds)
+birds$Effort <- birds$Effort * birds$repeats   # two visits
+library(Distance)
+convunit <- convert_units("meter", "kilometer", "hectare")
+head(birds)
+all.birds <- ds(data = birds,
+                key="hn", convert.units = convunit,
+                formula=~species, truncation = 95)
+summary(all.birds)
+plot.with.covariates(all.birds)
+
+bird.ests <- dht2(ddf=all.birds, flatfile=birds,
+                  strat_formula = ~species, convert_units = convunit,
+                  stratification = "object")
+
+```
+
+
+```{r}
+
+ACM_2015<-read.table("dsAv_Ch_Mi_15.txt", head=TRUE)
+head(ACM_2015)
+
+#Calculate perpendicular distance
+ACM_2015$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = ACM_2015) 
+ACM_2015 <- ACM_2015[,-which(names(ACM_2015) %in% c("sightdist", "sightangle"))]
+ACM_2015$dist[ACM_2015$dist == 0] <- NA 
+
+sum(!is.na(ACM_2015$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(ACM_2015)
+
+# Rename column where nameS
+names(ACM_2015)[names(ACM_2015) == "dist"] <- "distance"
+colnames(ACM_2015)
+
+ACM_2015$Effort <- ACM_2015$Effort * ACM_2015$repeats   
+
+convunit <- convert_units("meter", "kilometer", "hectare")
+head(ACM_2015)
+DS.ACM_2015<- ds(data = ACM_2015,
+                key="hn", convert.units = convunit,
+                formula=~Species, truncation = 95)
+
+summary(DS.ACM_2015)
+gof_ds(DS.ACM_2015)
+
+plot.with.covariates(DS.ACM_2015)
+
+xx <- dht2(ddf=DS.ACM_2015, flatfile=ACM_2015,
+                  strat_formula = ~Species, convert_units = convunit,
+                  stratification = "object")
+
+```
+
+#Microcebus 2015 data
+
+```{r}
+Microcebus15_TE<-read.table("ds_Micro15.txt", head=TRUE)
+head(Microcebus15_TE)
+
+#Calculate perpendicular distance
+Microcebus15_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Microcebus15_TE) 
+Microcebus15_TE <- Microcebus15_TE[,-which(names(Microcebus15_TE) %in% c("sightdist", "sightangle"))]
+Microcebus15_TE$dist[Microcebus15_TE$dist == 0] <- NA 
+#DO NOT RUN Microcebus15_TE$Size[Microcebus15_TE$Size == 0] <- NA 
+Microcebus15_TE$Effort <- Microcebus15_TE$Effort * Microcebus15_TE$repeats   
+sum(!is.na(Microcebus15_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Microcebus15_TE)
+
+# Rename column where nameS
+names(Microcebus15_TE)[names(Microcebus15_TE) == "dist"] <- "distance"
+colnames(Microcebus15_TE)
+
+#Examine the distribution of detection distances
+#Gain familiarity with the perpendicular distance data using the hist() function
+
+hist(Microcebus15_TE$distance, xlab="Distance (m)", main="Microcebus jollyae 2015") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+
+#Once all the data is in order, fit a detection function model with ds
+
+Microcebus15_TE_hn <- ds(data=Microcebus15_TE, key="hn", adjustment=NULL,transect="line")
+summary(Microcebus15_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,2,4,6,8,10, 12,14)
+plot(Microcebus15_TE_hn, breaks=cutpoints, main="Half normal model, Microcebus jollyae 2015 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+Microcebus15_TE.unif.cos <- ds(Microcebus15_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Microcebus15_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Microcebus15_TE.hr.poly <- ds(Microcebus15_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Microcebus15_TE.hr.poly)
+
+```
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Microcebus15_TE_hn, Microcebus15_TE.hr.poly, Microcebus15_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Microcebus15_TE.hr.poly)
+
+#model comparison
+knitr::kable(summarize_ds_models(Microcebus15_TE_hn, Microcebus15_TE.hr.poly, Microcebus15_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Microcebus15_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Microcebus15_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+
+#Microcebus 2016 data
+
+```{r}
+Microcebus16_TE<-read.table("ds_micro16.txt", head=TRUE)
+head(Microcebus16_TE)
+
+#Calculate perpendicular distance
+Microcebus16_TE$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = Microcebus16_TE) 
+Microcebus16_TE <- Microcebus16_TE[,-which(names(Microcebus16_TE) %in% c("sightdist", "sightangle"))]
+Microcebus16_TE$dist[Microcebus16_TE$dist == 0] <- NA 
+#DO NOT RUN Microcebus16_TE$Size[Microcebus16_TE$Size == 0] <- NA 
+  
+sum(!is.na(Microcebus16_TE$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(Microcebus16_TE)
+
+# Rename column where nameS
+names(Microcebus16_TE)[names(Microcebus16_TE) == "dist"] <- "distance"
+colnames(Microcebus16_TE)
+
+#Examine the distribution of detection distances
+#Gain familiarity with the perpendicular distance data using the hist() function
+
+hist(Microcebus16_TE$distance, xlab="Distance (m)", main="Microcebus jollyae 2016") 
+
+#This is just to show that all the measures in the data are in meters 
+conversion.factor <- convert_units("meter", "meter", "meter") 
+
+#Once all the data is in order, fit a detection function model with ds
+
+Microcebus16_TE_hn <- ds(data=Microcebus16_TE, key="hn", adjustment=NULL,transect="line")
+summary(Microcebus16_TE_hn)
+
+#Visually inspect the fitted detection function with the plot() function,
+#specifying the cutpoints histogram with argument breaks
+cutpoints <- c(0,2,4,6,8,10, 12,14,16)
+plot(Microcebus16_TE_hn, breaks=cutpoints, main="Half normal model, Microcebus jollyae 2016 line transects")
+```
+
+Next, fit 
+* 1) a uniform key function with cosine adjustment terms
+* 2) a hazard rate key function with simple polynomial adjustment terms
+```{r}
+Microcebus16_TE.unif.cos <- ds(Microcebus16_TE, key="unif", adjustment="cos",
+                      convert.units=1)
+summary(Microcebus16_TE.unif.cos)
+
+#When this line of code is executed, multiple models will be fitted, successively adding addition adjustment terms.
+#When the model with four adjustment terms is fit, an error message is returned; but a uniform key 
+#with 3 cosine adjustments is fitted and contained in the returned object.
+
+#To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:
+  
+Microcebus16_TE.hr.poly <- ds(Microcebus16_TE, key="hr", adjustment="poly", 
+                     convert.units=1)
+summary(Microcebus16_TE.hr.poly)
+
+```
+
+Model comparison and goodness of fit
+df in the AIC table indicates the number of parameters associated with each model.
+
+P-value ≤ α: The observed data are statistically different from the expected values (Reject H0)
+If the p-value is less than or equal to the significance level, you reject the null hypothesis and conclude that the data does not follow a distribution with certain proportions. Use your specialized knowledge to determine whether the difference is practically significant.
+```{r}
+AIC(Microcebus16_TE_hn, Microcebus16_TE.hr.poly, Microcebus16_TE.unif.cos)
+
+#Goodness of fit
+gof_ds(Microcebus16_TE.unif.cos)
+
+#model comparison
+knitr::kable(summarize_ds_models(Microcebus16_TE_hn, Microcebus16_TE.hr.poly, Microcebus16_TE.unif.cos),digits=3)
+
+par(mfrow=c(1,2))
+plot(Microcebus16_TE.hr.poly, breaks=cutpoints, main="Hazard rate")
+plot(Microcebus16_TE.unif.cos, breaks=cutpoints, main="Uniform cosine")
+```
+
+##Multispp- diurnal 2015
+I will pool together 4 diurnal species because I need at least 2 that have a good number of observations 
+
+```{r}
+#RufVar15<-rbind(Rufifrons15_TE, Varecia15_TE)
+
+#with area to calculate abundance
+#ds_diu15<-read.table("DS_diurnal15.txt", head=TRUE)
+
+#without area to get densities
+ds_diu15<-read.table("DS_diurnal15_area0.txt", head=TRUE)
+head(ds_diu15)
+
+#Calculate perpendicular distance
+ds_diu15$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = ds_diu15) 
+ds_diu15 <- ds_diu15[,-which(names(ds_diu15) %in% c("sightdist", "sightangle"))]
+ds_diu15$dist[ds_diu15$dist == 0] <- NA 
+
+sum(!is.na(ds_diu15$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(ds_diu15)
+
+# Rename column where nameS
+names(ds_diu15)[names(ds_diu15) == "dist"] <- "distance"
+colnames(ds_diu15)
+head(ds_diu15)
+DS.diu15<- ds(data = ds_diu15,
+                key="hn",
+                formula=~Species, truncation = 95)
+
+summary(DS.diu15)
+gof_ds(DS.diu15)
+
+plot.with.covariates(DS.diu15)
+
+diu15 <- dht2(ddf=DS.diu15, flatfile=ds_diu15,
+                  strat_formula = ~Species,
+                  stratification = "object")
+
+```
+
+
+#Multispp- diurnal 2015 b
+Did not include Prolemur THIS DOES NOT CHANGE ANY OF THE ESTIMATIONS!
+I will pool together 3 diurnal species because I need at least 2 that have a good number of observations 
+
+```{r}
+#RufVar15<-rbind(Rufifrons15_TE, Varecia15_TE)
+#This data HAS ERRORS
+#ds_diu15b<-read.table("DS_diurnal15b.txt", head=TRUE)
+head(ds_diu15b)
+
+#Calculate perpendicular distance
+ds_diu15b$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = ds_diu15b) 
+ds_diu15b <- ds_diu15b[,-which(names(ds_diu15b) %in% c("sightdist", "sightangle"))]
+ds_diu15b$dist[ds_diu15b$dist == 0] <- NA 
+
+sum(!is.na(ds_diu15b$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(ds_diu15b)
+
+# Rename column where nameS
+names(ds_diu15b)[names(ds_diu15b) == "dist"] <- "distance"
+colnames(ds_diu15b)
+head(ds_diu15b)
+DS.diu15b<- ds(data = ds_diu15b,
+                key="hn",
+                formula=~Species, truncation = 95)
+
+summary(DS.diu15b)
+gof_ds(DS.diu15b)
+
+plot.with.covariates(DS.diu15b)
+
+diu15b <- dht2(ddf=DS.diu15b, flatfile=ds_diu15b,
+                  strat_formula = ~Species,
+                  stratification = "object")
+
+```
+
+
+#Multispp- diurnal 2016
+Did not include Prolemur THIS DOES NOT CHANGE ANY OF THE ESTIMATIONS!
+I will pool together 3 diurnal species because I need at least 2 that have a good number of observations 
+
+```{r}
+#RufVar15<-rbind(Rufifrons15_TE, Varecia15_TE)
+
+ds_ds_diu16<-read.table("DS_diurnal16.txt", head=TRUE)
+head(ds_ds_diu16)
+
+#Calculate perpendicular distance
+ds_ds_diu16$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = ds_ds_diu16) 
+ds_ds_diu16 <- ds_ds_diu16[,-which(names(ds_ds_diu16) %in% c("sightdist", "sightangle"))]
+ds_ds_diu16$dist[ds_ds_diu16$dist == 0] <- NA 
+
+sum(!is.na(ds_ds_diu16$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(ds_ds_diu16)
+
+# Rename column where nameS
+names(ds_ds_diu16)[names(ds_ds_diu16) == "dist"] <- "distance"
+colnames(ds_ds_diu16)
+head(ds_ds_diu16)
+DS.ds_diu16<- ds(data = ds_ds_diu16,
+                key="hn",
+                formula=~Species, truncation = 95)
+
+summary(DS.ds_diu16)
+gof_ds(DS.ds_diu16)
+
+plot.with.covariates(DS.ds_diu16)
+
+ds_diu16 <- dht2(ddf=DS.ds_diu16, flatfile=ds_ds_diu16,
+                  strat_formula = ~Species,
+                  stratification = "object")
+
+```
+
+
+
+
+#Microcebus multi year
+put together all the sightings of Microcebus, will use year as covariate 
+```{r}
+
+micro_year<-read.table("DS_Micro_years.txt", head=TRUE)
+head(micro_year)
+micro_year$Year<-as.factor(micro_year$Year)
+summary(micro_year)
+
+#Calculate perpendicular distance
+micro_year$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = micro_year) 
+micro_year <- micro_year[,-which(names(micro_year) %in% c("sightdist", "sightangle"))]
+micro_year$dist[micro_year$dist == 0] <- NA 
+
+sum(!is.na(micro_year$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(micro_year)
+
+# Rename column where nameS
+names(micro_year)[names(micro_year) == "dist"] <- "distance"
+colnames(micro_year)
+head(micro_year)
+
+DS_microY<- ds(data = micro_year,
+                key="hn",
+                formula=~Year, truncation = 98)
+
+summary(DS_microY)
+gof_ds(DS_microY)
+
+plot.with.covariates(DS_microY)
+ds_cov_microY <- dht2(ddf=DS_microY, flatfile=micro_year,
+                  strat_formula = ~Year,
+                  stratification = "object")
+
+```
