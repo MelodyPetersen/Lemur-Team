@@ -1814,3 +1814,47 @@ ds_cov_microY <- dht2(ddf=DS_microY, flatfile=micro_year,
                   stratification = "object")
 
 ```
+
+#E rufifrons multi year
+put together all the sightings of E rufifrons, will use year as covariate 
+```{r}
+#Transect with no sightings need to have "0" for size and not NA
+#Area is set to "0" to get densities instead of abundance
+rufi_year<-read.table("ds_ruf_year_cov.txt", head=TRUE)
+head(rufi_year)
+rufi_year$year<-as.factor(rufi_year$year)
+summary(rufi_year)
+
+#Calculate perpendicular distance
+rufi_year$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = rufi_year) 
+rufi_year <- rufi_year[,-which(names(rufi_year) %in% c("sightdist", "sightangle"))]
+rufi_year$dist[rufi_year$dist == 0] <- NA 
+
+sum(!is.na(rufi_year$dist))
+#The code above determines the number of detection distances that are not missing. 
+
+# get column names
+colnames(rufi_year)
+
+# Rename column
+names(rufi_year)[names(rufi_year) == "dist"] <- "distance"
+colnames(rufi_year)
+head(rufi_year)
+summary(rufi_year$distance)
+
+conversion.factor <- convert_units("meter", "meter", "metre")
+
+DS_rufiY<- ds(data = rufi_year,
+                key="hn",
+                formula=~year, convert.units=conversion.factor)
+
+summary(DS_rufiY)
+gof_ds(DS_rufiY)
+
+plot.with.covariates(DS_rufiY)
+ds_cov_rufiY <- dht2(ddf=DS_rufiY, flatfile=rufi_year,
+                  strat_formula = ~year, 
+                  stratification = "object")
+
+```
