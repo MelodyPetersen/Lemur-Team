@@ -1240,7 +1240,7 @@ Rufifrons18_TE
 TE=Total effort
 
 ```{r}
-Rufifrons18_TE<-read.table("ds_ruf15.txt", head=TRUE)
+Rufifrons18_TE<-read.table("ds_ruf18.txt", head=TRUE)
 head(Rufifrons18_TE)
 
 #Calculate perpendicular distance
