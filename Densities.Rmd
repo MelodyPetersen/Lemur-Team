@@ -1858,3 +1858,192 @@ ds_cov_rufiY <- dht2(ddf=DS_rufiY, flatfile=rufi_year,
                   stratification = "object")
 
 ```
+
+FINAL CODE FOR FRONTIERS MANUSCRIPT
+#Avahi stratification year
+Suggested by Dr. Rexstad. Pool together all the sightings of individual species and use year as "Region.Label" 
+put together all the sightings of Avahi
+```{r}
+
+avahi_year<-read.table("dS_av_year.txt", head=TRUE)
+head(avahi_year)
+avahi_year$Region.Label<-as.factor(avahi_year$Region.Label)
+#Calculate perpendicular distance
+avahi_year$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = avahi_year) 
+avahi_year <- avahi_year[,-which(names(avahi_year) %in% c("sightdist", "sightangle"))]
+avahi_year$dist[avahi_year$dist == 0] <- NA 
+sum(!is.na(avahi_year$dist))
+ 
+names(avahi_year)[names(avahi_year) == "dist"] <- "distance"
+colnames(avahi_year)
+head(avahi_year)
+
+
+conversion <- convert_units("meter", "meter", "square kilometer")
+DS_avahiR<- ds(data = avahi_year,	key="hn",formula=~Region.Label, convert.units = conversion)
+summary(DS_avahiR)
+gof_ds(DS_avahiR)
+
+DS_avahiCons<- ds(data = avahi_year, key="hn", convert.units = conversion)
+summary(DS_avahiCons)
+gof_ds(DS_avahiCons)
+
+#Changed the name from DS_avahihr to DS_avahiK because it kept showing a weird error
+DS_avahiK<- ds(data = avahi_year, key="hr", convert.units = conversion)
+summary(DS_avahiK)
+gof_ds(DS_avahiK)
+
+DS_avahi_uni <- ds(data = avahi_year, key="unif", adjustment="cos",
+                      convert.units=conversion)
+summary(DS_avahi_uni)
+
+AIC(DS_avahiR, DS_avahiCons, DS_avahiK, DS_avahi_uni)
+
+par(mfrow=c(1,2))
+plot(DS_avahiR, breaks=cutpoints, main="Half normal model, Avahi line transects")
+plot(DS_avahiCons, breaks=cutpoints, main="Half normal model, Avahi line transects")
+plot(DS_avahiK, breaks=cutpoints, main="Hazard-rate, Avahi line transects")
+plot(DS_avahi_uni, breaks=cutpoints, main="Uniform, Avahi line transects")
+
+```
+
+
+#Cheirogaleus stratification year
+put together all the sightings of Cheirogaleus 
+```{r}
+
+cheiro_year<-read.table("ds_cheiro_year.txt", head=TRUE)
+head(cheiro_year)
+cheiro_year$Region.Label<-as.factor(cheiro_year$Region.Label)
+#Calculate perpendicular distance
+cheiro_year$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = cheiro_year) 
+cheiro_year <- cheiro_year[,-which(names(cheiro_year) %in% c("sightdist", "sightangle"))]
+cheiro_year$dist[cheiro_year$dist == 0] <- NA 
+
+#determines the number of detection distances that are not missing
+sum(!is.na(cheiro_year$dist))
+ 
+# Rename column where nameS
+names(cheiro_year)[names(cheiro_year) == "dist"] <- "distance"
+colnames(cheiro_year)
+head(cheiro_year)
+#write.table( lem_year, file="ds_ER.txt",quote=F, sep="\t")
+
+conversion <- convert_units("meter", "meter", "square kilometer")
+DS_cheiroR<- ds(data = cheiro_year,	key="hn",formula=~Region.Label, convert.units = conversion, truncation = (right="1%"))
+summary(DS_cheiroR)
+gof_ds(DS_cheiroR)
+
+DS_cheiroCons<- ds(data = cheiro_year, key="hn", convert.units = conversion, truncation = (right="1%"))
+summary(DS_cheiroCons)
+gof_ds(DS_cheiroCons)
+
+DS_cheirohr<- ds(data = cheiro_year, key="hr", convert.units = conversion, truncation = (right="1%"))
+summary(DS_cheirohr)
+gof_ds(DS_cheirohr)
+
+DS_cheiro_uni<- ds(data = cheiro_year, key="unif", adjustment="cos", convert.units=conversion)
+AIC(DS_cheiroR, DS_cheiroCons, DS_cheirohr, DS_cheiro_uni)
+
+par(mfrow=c(1,2))
+plot(DS_cheiroR, breaks=cutpoints, main="Half normal model, Cheirogaleus line transects")
+plot(DS_cheiroCons, breaks=cutpoints, main="Half normal model, Cheirogaleus line transects")
+plot(DS_cheirohr, breaks=cutpoints, main="Hazard-rate, Cheirogaleus line transects")
+plot(DS_cheiro_uni, breaks=cutpoints, main="Uniform, Cheirogaleus line transects")
+```
+
+#Microcebus stratification year
+put together all the sightings of Microcebus
+```{r}
+
+micro_year<-read.table("DS_Micro_years.txt", head=TRUE)
+head(micro_year)
+micro_year$Region.Label<-as.factor(micro_year$Region.Label)
+#Calculate perpendicular distance
+micro_year$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = micro_year) 
+micro_year <- micro_year[,-which(names(micro_year) %in% c("sightdist", "sightangle"))]
+micro_year$dist[micro_year$dist == 0] <- NA 
+
+#determines the number of detection distances that are not missing
+sum(!is.na(micro_year$dist))
+ 
+# Rename column where nameS
+names(micro_year)[names(micro_year) == "dist"] <- "distance"
+colnames(micro_year)
+head(micro_year)
+write.table( lem_year, file="ds_ER.txt",quote=F, sep="\t")
+
+conversion <- convert_units("meter", "meter", "square kilometer")
+DS_microR<- ds(data = micro_year,	key="hn",formula=~Region.Label, convert.units = conversion)
+summary(DS_microR)
+gof_ds(DS_microR)
+
+DS_microCons<- ds(data = micro_year, key="hn", convert.units = conversion)
+gof_ds(DS_microCons)
+summary(DS_microCons)
+
+DS_micro_hr<- ds(data = micro_year, key="hr", convert.units = conversion)
+gof_ds(DS_microhr)
+summary(DS_microhr)
+
+DS_micro_uni<- ds(data = micro_year, key="unif", adjustment="cos", convert.units=conversion)
+
+AIC(DS_microR, DS_microCons, DS_micro_hr, DS_micro_uni)
+
+par(mfrow=c(1,2))
+
+plot(DS_microR, breaks=cutpoints, main="Half normal model, Microcebus line transects")
+plot(DS_microCons, breaks=cutpoints, main="Half normal model, Microcebus line transects")
+plot(DS_micro_hr, breaks=cutpoints, main="Hazard-rate, Microcebus line transects")
+
+
+```
+
+#E. rubriventer stratification year
+put together all the sightings of Microcebus
+```{r}
+
+rub_year<-read.table("DS_erub_year.txt", head=TRUE)
+head(rub_year)
+rub_year$Region.Label<-as.factor(rub_year$Region.Label)
+#Calculate perpendicular distance
+rub_year$dist<- perpDists(sightDist="sightdist", sightAngle="sightangle",
+                                      data = rub_year) 
+rub_year <- rub_year[,-which(names(rub_year) %in% c("sightdist", "sightangle"))]
+rub_year$dist[rub_year$dist == 0] <- NA 
+
+#determines the number of detection distances that are not missing
+sum(!is.na(rub_year$dist))
+ 
+# Rename column where nameS
+names(rub_year)[names(rub_year) == "dist"] <- "distance"
+colnames(rub_year)
+head(rub_year)
+#write.table( lem_year, file="ds_ER.txt",quote=F, sep="\t")
+
+conversion <- convert_units("meter", "meter", "square kilometer")
+DS_rubR<- ds(data = rub_year,	key="hn",formula=~Region.Label, convert.units = conversion)
+summary(DS_rubR)
+gof_ds(DS_rubR)
+
+DS_rubCons<- ds(data = rub_year, key="hn", convert.units = conversion)
+gof_ds(DS_rubCons)
+summary(DS_rubCons)
+
+DS_rub_hr<- ds(data = rub_year, key="hr", convert.units = conversion)
+gof_ds(DS_rub_hr)
+summary(DS_rub_hr)
+
+DS_rub_uni<- ds(data = rub_year, key="unif", adjustment="cos", convert.units=conversion)
+
+AIC(DS_rubR, DS_rubCons, DS_rub_hr, DS_rub_uni)
+
+cutpoints <- c(0,5,10,16,20,25,30)
+plot(DS_rubR, breaks=cutpoints, main="Half normal model, E. rubriventer  line transects")
+plot(DS_rubCons, breaks=cutpoints, main="Half normal model, E. rubriventer line transects")
+plot(DS_rub_hr, breaks=cutpoints, main="Hazard-rate, E. rubriventer line transects")
+
+```
